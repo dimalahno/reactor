@@ -10,12 +10,9 @@ public class Lec07MonoFromFuture {
     public static void main(String[] args) {
 
         Mono.fromFuture(getName())
-                .subscribe(
-                        Util.onNext()
-                );
+                .subscribe(Util.onNext());
 
         Util.sleepSeconds(1);
-
     }
 
     private static CompletableFuture<String> getName() {
