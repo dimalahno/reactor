@@ -4,29 +4,23 @@ import course_util.Util;
 import reactor.core.publisher.Flux;
 import reactor.core.scheduler.Schedulers;
 
-public class Lec02SubscribeOnDemo {
+public class Lec03SubscribeOnMultipleItems {
 
     public static void main(String[] args) {
         Flux<Object> flux = Flux.create(fluxSink -> {
                     printThreadName("create");
                     fluxSink.next(1);
                 })
-                .subscribeOn(Schedulers.newParallel("vins"))
                 .doOnNext(i -> printThreadName("next " + 1));
 
-        Runnable runnable = () -> flux.doFirst(() -> printThreadName("first2"))
-                .subscribeOn(Schedulers.boundedElastic())
-                .doFirst(() -> printThreadName("first1"))
+        flux.subscribeOn(Schedulers.boundedElastic())
                 .subscribe(v -> printThreadName("sub " + v));
 
-        for (int i = 0; i < 2; i++) {
-            new Thread(runnable).start();
-        }
-        
         Util.sleepSeconds(5);
     }
 
     private static void printThreadName(String msg) {
         System.out.println(msg + "\t\t: Tread : " + Thread.currentThread().getName());
     }
+
 }
